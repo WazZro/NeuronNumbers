@@ -1,11 +1,10 @@
 import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
 import java.io.*;
 
 public class Main {
     public static void main(String[] args) throws IOException {
         System.out.println("Started NeuronNetwork...");
-        NeuronNetwork network = new NeuronNetwork(10);
+        NeuronNetwork network = new NeuronNetwork(10, 60, 100);
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         String[] command;
 
@@ -44,7 +43,7 @@ public class Main {
 
     private static void study(Neuron neuron, BufferedReader reader) throws IOException {
         String str;
-        int[][] input = new int[3][5];
+        int[][] input = new int[60][100];
 
         while (true) {
             System.out.print("~" + neuron.getName() + "-$: ");
@@ -66,12 +65,8 @@ public class Main {
                 System.out.print("Agree? (Y/n): ");
                 var a = reader.readLine().equals("n");
 
-                if (a) {
-                    if (!isTrue)
-                        neuron.inc(input);
-                    else
-                        neuron.dec(input);
-                }
+                if (a)
+                    neuron.study(input, isTrue);
             } catch (IOException e) {
                 System.out.println("This file doesn't exist");
             }
@@ -79,8 +74,8 @@ public class Main {
     }
 
     private static void out(int[][] matrix) {
-        for (int y = 0; y < 5; y++) {
-            for (int x = 0; x < 3; x++) {
+        for (int y = 0; y < matrix[0].length; y++) {
+            for (int x = 0; x < matrix.length; x++) {
                 System.out.print(matrix[x][y] + " ");
             }
             System.out.println();
