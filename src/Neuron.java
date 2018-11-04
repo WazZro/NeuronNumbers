@@ -12,7 +12,19 @@ public class Neuron {
     private int sizeX;
     private int sizeY;
 
-    public static final double MULTIPLIER = 0.01;
+    public int getSizeX() {
+        return sizeX;
+    }
+
+    public int getSizeY() {
+        return sizeY;
+    }
+
+    public static double getMULTIPLIER() {
+        return MULTIPLIER;
+    }
+
+    public static final double MULTIPLIER = 0.001;
 
     Neuron(int sizeX, int sizeY, String name) throws IOException {
         this.name = name;
@@ -50,7 +62,7 @@ public class Neuron {
     public void study(int[][] input, boolean isTrue) throws IOException {
         this.input = input;
 
-        if (!isTrue)
+        if (isTrue)
             inc(input);
         else
             dec(input);
