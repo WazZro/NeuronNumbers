@@ -12,6 +12,8 @@ public class Neuron {
     private int sizeX;
     private int sizeY;
 
+    public static final double MULTIPLIER = 0.01;
+
     Neuron(int sizeX, int sizeY, String name) throws IOException {
         this.name = name;
         this.sizeX = sizeX;
@@ -96,7 +98,7 @@ public class Neuron {
 //    }
 
     private double rez() {
-        return 1 / (1 + Math.exp(-sum));
+        return 1 / (1 + Math.exp(-sum * MULTIPLIER));
     }
 
     private void save() throws IOException {

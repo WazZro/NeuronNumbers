@@ -1,5 +1,8 @@
 import javax.imageio.ImageIO;
+import javax.imageio.stream.ImageInputStream;
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 public class Main {
     public static void main(String[] args) throws IOException {
@@ -16,15 +19,15 @@ public class Main {
                     case "learn":
                         var neuron = network.getNeuron(command[1]);
                         System.out.println("Start learning the neuron " + neuron.getName() + ":");
-                        study(neuron, reader);
+                        //study(neuron, reader);
                         System.out.println("The learning stopped");
                         break;
                     case "what":
-                        var res = network.recognize(ImageIO.read(new File(command[1])));
+                        var res = network.recognize(ImageIO.read(Files.newInputStream(Paths.get(command[1]))));
                         System.out.println(res);
                         break;
                     case "debug":
-                        var str = network.check(ImageIO.read(new File(command[1])));
+                        var str = network.check(ImageIO.read(Files.newInputStream(Paths.get(command[1]))));
                         System.out.println(str);
                         break;
                     case "help":
@@ -34,9 +37,13 @@ public class Main {
                         break;
                     case "exit":
                         return;
+                    default:
+                        System.out.println("Wrong command. Try to repeat. Write 'help'");
                 }
-            } catch (ArrayIndexOutOfBoundsException | NullPointerException e) {
-                System.out.println("Wrong command. Try to repeat. Write 'help'");
+            } catch (ArrayIndexOutOfBoundsException e) {
+                System.out.println("Specify command parameters!");
+            } catch (NullPointerException e) {
+                System.out.println("No files found");
             }
         }
     }
@@ -56,20 +63,32 @@ public class Main {
                 continue;
             }
 
-
             try {
-                NeuronNetwork.convert(ImageIO.read(new File(str)), input);
+                NeuronNetwork.convert(ImageIO.read(Files.newInputStream(Paths.get(str))), input);
 
                 var isTrue = neuron.recognize(input);
                 System.out.println(isTrue + " " + neuron.getSum());
                 System.out.print("Agree? (Y/n): ");
                 var a = reader.readLine().equals("n");
 
-                if (a)
-                    neuron.study(input, isTrue);
             } catch (IOException e) {
-                System.out.println("This file doesn't exist");
+                System.out.println("This file is wrong or doesn't exist");
             }
+
+
+//            try {
+//                NeuronNetwork.convert(ImageIO.read(new File(str)), input);
+//
+//                var isTrue = neuron.recognize(input);
+//                System.out.println(isTrue + " " + neuron.getSum());
+//                System.out.print("Agree? (Y/n): ");
+//                var a = reader.readLine().equals("n");
+//
+//                if (a)
+//                    neuron.study(input, isTrue);
+//            } catch (IOException e) {
+//                System.out.println("This file doesn't exist");
+//            }
         }
     }
 

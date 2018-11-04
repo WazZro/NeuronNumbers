@@ -60,7 +60,7 @@ public class NeuronNetwork {
         }
 
         if (n != null)
-            return "It is " + n.getName() + " number";
+            return "It is " + n.getName() + " number, f = " + max ;
         return null;
     }
 
