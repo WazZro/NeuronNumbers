@@ -3,11 +3,22 @@ import java.io.IOException;
 
 public class NeuronNetwork {
     private Neuron[] neurons;
+    private int resX;
+    private int resY;
 
     public NeuronNetwork(int size) throws IOException {
         neurons = new Neuron[size];
         for (var i = 0; i < size; i++) {
             neurons[i] = new Neuron(3, 5, Integer.toString(i));
+        }
+    }
+
+    public NeuronNetwork(int size, int resX, int resY) throws IOException {
+        neurons = new Neuron[size];
+        this.resX = resX;
+        this.resY = resY;
+        for (var i = 0; i < size; i++) {
+            neurons[i] = new Neuron(resX, resY, Integer.toString(i));
         }
     }
 
@@ -17,7 +28,7 @@ public class NeuronNetwork {
 
     public String check(BufferedImage image) {
         StringBuilder sb = new StringBuilder("Sums: ");
-        int[][] input = new int[3][5];
+        int[][] input = new int[resX][resY];
         NeuronNetwork.convert(image, input);
         for (var n : neurons) {
             sb.append(n.getName()).append(": ").append(n.check(input)).append("\n");
@@ -27,36 +38,42 @@ public class NeuronNetwork {
     }
 
     public String recognize(BufferedImage image) {
-        int[][] input = new int[3][5];
+        int[][] input = new int[resX][resY];
 
         convert(image, input);
 
-        int max = 0;
+        double max = 0;
+        double current = 0;
         Neuron n = null;
         for (var neuron : neurons) {
-            if (neuron.recognize(input)) {
-                if (neuron.getSum() > max){
-                    max = neuron.getSum();
-                    n = neuron;
-                }
+            current = neuron.recognize(input);
+            if (current > max) {
+                n = neuron;
+                max = current;
             }
+//            if (neuron.recognize(input)) {
+//                if (neuron.getSum() > max) {
+//                    max = neuron.getSum();
+//                    n = neuron;
+//                }
+//            }
         }
 
         if (n != null)
-            return n.getName() + ", Sum = " + n.getSum();
+            return "It is " + n.getName() + " number, f = " + max ;
         return null;
     }
 
-    public static void study(BufferedImage image, Neuron neuron, boolean isTrue) throws IOException {
-        int[][] input = new int[3][5];
+    public static void study(int resX, int resY, BufferedImage image, Neuron neuron, boolean isTrue) throws IOException {
+        int[][] input = new int[resX][resY];
 
         convert(image, input);
         neuron.study(input, isTrue);
     }
 
     public static void convert(BufferedImage image, int[][] input) {
-        for (int y = 0; y <= 4; y++) {
-            for (int x = 0; x <= 2; x++) {
+        for (int y = 0; y < input[0].length; y++) {
+            for (int x = 0; x < input.length; x++) {
                 int n = image.getRGB(x, y);
                 if (n == -1)
                     n = 0;
@@ -75,5 +92,13 @@ public class NeuronNetwork {
         }
 
         return null;
+    }
+
+    public int getResX() {
+        return resX;
+    }
+
+    public int getResY() {
+        return resY;
     }
 }
